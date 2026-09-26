@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Newsreader", ui-serif, Georgia, serif;
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", monospace;
+
+  /* Ink & paper: the base of the registry */
+  --color-ink: #16213A;
+  --color-ink-soft: #2C3B5C;
+  --color-paper: #F5F3EC;
+  --color-paper-raised: #FFFFFF;
+  --color-line: #E1DCCC;
+  --color-line-strong: #C9C2AC;
+  --color-slate: #626C7A;
+
+  /* Brass: the one accent, used deliberately */
+  --color-brass: #AD7A2C;
+  --color-brass-dark: #8A5F1F;
+  --color-brass-tint: #F1E4C8;
+
+  /* Semantic status colors — muted, not neon */
+  --color-forest: #33684C;
+  --color-forest-tint: #E1EBE2;
+  --color-amber: #B4791E;
+  --color-amber-tint: #F3E5CA;
+  --color-rust: #A23F2C;
+  --color-rust-tint: #F2DFD8;
+}
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+}
+
+/* A hairline ledger rule, used sparingly under page titles and hero figures */
+.rule-brass {
+  height: 2px;
+  background: linear-gradient(to right, var(--color-brass) 0 48px, var(--color-line) 48px 100%);
+}
+
+::selection {
+  background: var(--color-brass-tint);
+}
