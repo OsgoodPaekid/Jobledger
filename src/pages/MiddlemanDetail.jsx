@@ -50,8 +50,8 @@ export default function MiddlemanDetail() {
         {m.clients.length === 0 && <p className="p-4 text-center text-slate">None yet.</p>}
       </div>
       <div className="hidden md:block bg-paper-raised border border-line rounded-[10px] overflow-hidden">
-        <div className="table-wrap">
-<table className="w-full text-sm">
+        <div className="table-wrap w-full overflow-x-auto">
+<table className="w-full min-w-[640px] text-sm">
           <thead><tr className="text-left text-slate text-[12.5px] border-b border-line"><th className="p-3 font-medium">Name</th><th className="font-medium">Phone</th><th className="font-medium">Referred</th></tr></thead>
           <tbody>
             {m.clients.map((c) => (
@@ -85,8 +85,8 @@ export default function MiddlemanDetail() {
         {m.jobs.length === 0 && <p className="p-4 text-center text-slate">None yet.</p>}
       </div>
       <div className="hidden md:block bg-paper-raised border border-line rounded-[10px] overflow-hidden">
-        <div className="table-wrap">
-<table className="w-full text-sm">
+        <div className="table-wrap w-full overflow-x-auto">
+<table className="w-full min-w-[640px] text-sm">
           <thead><tr className="text-left text-slate text-[12.5px] border-b border-line"><th className="p-3 font-medium">Job #</th><th className="font-medium">Client</th><th className="font-medium">Stage</th><th className="font-medium">Total</th><th className="font-medium">Payment</th></tr></thead>
           <tbody>
             {m.jobs.map((j) => (

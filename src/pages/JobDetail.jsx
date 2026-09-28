@@ -110,8 +110,8 @@ export default function JobDetail() {
           <TextInput placeholder="Notes" className="col-span-2" value={payForm.notes} onChange={(e) => setPayForm({ ...payForm, notes: e.target.value })} />
           <Button className="col-span-2" type="submit">Record payment</Button>
         </form>
-        <div className="table-wrap">
-<table className="w-full text-sm">
+        <div className="table-wrap w-full overflow-x-auto">
+<table className="w-full min-w-[640px] text-sm">
           <thead>
             <tr className="text-left text-slate text-[12.5px] border-b border-line">
               <th className="font-medium pb-2">Date</th><th className="font-medium">Amount</th><th className="font-medium">Method</th><th className="font-medium">Reference</th><th></th>

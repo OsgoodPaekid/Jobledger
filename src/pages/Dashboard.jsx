@@ -80,8 +80,8 @@ export default function Dashboard() {
       </div>
 
       <Panel title="Top middlemen by business value">
-        <div className="table-wrap">
-<table className="w-full text-sm">
+        <div className="table-wrap w-full overflow-x-auto">
+<table className="w-full min-w-[640px] text-sm">
           <tbody>
             {data.top_middlemen.map((m, i) => (
               <tr key={i} className="border-b border-line last:border-0">

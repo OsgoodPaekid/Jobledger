@@ -32,8 +32,8 @@ export default function Payments() {
         {payments.length === 0 && <p className="p-6 text-center text-slate">No payments recorded yet.</p>}
       </div>
       <div className="hidden md:block bg-paper-raised border border-line rounded-[10px] overflow-hidden">
-        <div className="table-wrap">
-<table className="w-full text-sm">
+        <div className="table-wrap w-full overflow-x-auto">
+<table className="w-full min-w-[640px] text-sm">
           <thead>
             <tr className="text-left text-slate text-[12.5px] border-b border-line">
               <th className="p-3 font-medium">Date</th><th className="font-medium">Job #</th><th className="font-medium">Client</th><th className="font-medium">Amount</th><th className="font-medium">Method</th><th className="font-medium">Reference</th>
