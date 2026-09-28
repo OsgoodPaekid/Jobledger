@@ -39,7 +39,8 @@ export default function ClientDetail() {
 
       <h2 className="text-[13px] font-medium text-slate mb-2">Jobs</h2>
       <div className="bg-paper-raised border border-line rounded-[10px] overflow-hidden">
-        <table className="w-full text-sm">
+        <div className="table-wrap">
+<table className="w-full text-sm">
           <thead>
             <tr className="text-left text-slate text-[12.5px] border-b border-line">
               <th className="p-3 font-medium">Job #</th><th className="font-medium">Type</th><th className="font-medium">Stage</th><th className="font-medium">Total</th><th className="font-medium">Outstanding</th><th className="font-medium">Payment</th><th className="font-medium">Received</th>
@@ -60,6 +61,7 @@ export default function ClientDetail() {
             {client.jobs.length === 0 && <tr><td colSpan={7} className="p-6 text-center text-slate">No jobs yet.</td></tr>}
           </tbody>
         </table>
+</div>
       </div>
     </div>
   );

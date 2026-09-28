@@ -110,7 +110,8 @@ export default function JobDetail() {
           <TextInput placeholder="Notes" className="col-span-2" value={payForm.notes} onChange={(e) => setPayForm({ ...payForm, notes: e.target.value })} />
           <Button className="col-span-2" type="submit">Record payment</Button>
         </form>
-        <table className="w-full text-sm">
+        <div className="table-wrap">
+<table className="w-full text-sm">
           <thead>
             <tr className="text-left text-slate text-[12.5px] border-b border-line">
               <th className="font-medium pb-2">Date</th><th className="font-medium">Amount</th><th className="font-medium">Method</th><th className="font-medium">Reference</th><th></th>
@@ -129,6 +130,7 @@ export default function JobDetail() {
             {job.payments.length === 0 && <tr><td colSpan={5} className="text-center text-slate py-4">No payments yet.</td></tr>}
           </tbody>
         </table>
+</div>
       </Panel>
     </div>
   );

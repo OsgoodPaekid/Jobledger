@@ -76,7 +76,7 @@ export default function Clients() {
 
       {showForm && (
         <Panel className="mb-5">
-          <form onSubmit={submit} className="grid grid-cols-2 gap-3">
+          <form onSubmit={submit} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <TextInput required placeholder="Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
             <TextInput placeholder="Phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
             <TextInput placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
@@ -86,15 +86,36 @@ export default function Clients() {
               {middlemen.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}
             </Select>
             <TextInput placeholder="How were they referred?" value={form.referral_notes} onChange={(e) => setForm({ ...form, referral_notes: e.target.value })} />
-            <Button className="col-span-2">{editingId ? "Save changes" : "Add client"}</Button>
+            <Button className="sm:col-span-2">{editingId ? "Save changes" : "Add client"}</Button>
           </form>
         </Panel>
       )}
 
-      <TextInput placeholder="Search name, phone, email…" className="w-72 mb-4" value={search} onChange={(e) => setSearch(e.target.value)} />
+      <TextInput placeholder="Search name, phone, email…" className="w-full sm:w-72 mb-4" value={search} onChange={(e) => setSearch(e.target.value)} />
 
-      <div className="bg-paper-raised border border-line rounded-[10px] overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="md:hidden space-y-3">
+        {clients.map((c) => (
+          <div key={c.id} className="bg-paper-raised border border-line rounded-[10px] p-4">
+            <div className="flex items-start justify-between gap-2 mb-2">
+              <Link className="font-medium text-ink hover:text-brass" to={"/clients/" + c.id}>{c.name}</Link>
+              <div className="inline-flex items-center gap-3">
+                <button onClick={() => startEdit(c)} className="text-slate hover:text-ink" title="Edit client"><Pencil size={16} /></button>
+                <button onClick={() => removeClient(c.id, c.name)} className="text-rust/70 hover:text-rust" title="Delete client"><Trash2 size={16} /></button>
+              </div>
+            </div>
+            <div className="text-slate text-sm">{c.phone}</div>
+            <div className="text-slate text-sm break-all">{c.email}</div>
+            <div className="flex items-center justify-between text-sm mt-3 pt-3 border-t border-line">
+              <span>Referred by: {c.middleman_name || "—"}</span>
+              <span className="font-serif tabular-nums">{c.job_count} jobs</span>
+            </div>
+          </div>
+        ))}
+        {clients.length === 0 && <p className="p-6 text-center text-slate">No clients found.</p>}
+      </div>
+      <div className="hidden md:block bg-paper-raised border border-line rounded-[10px] overflow-hidden">
+        <div className="table-wrap">
+<table className="w-full text-sm">
           <thead>
             <tr className="text-left text-slate text-[12.5px] border-b border-line">
               <th className="p-3 font-medium">Name</th><th className="font-medium">Phone</th><th className="font-medium">Email</th><th className="font-medium">Referred by</th><th className="font-medium">Jobs</th><th className="font-medium"></th>
@@ -123,6 +144,7 @@ export default function Clients() {
             {clients.length === 0 && <tr><td colSpan={6} className="p-6 text-center text-slate">No clients found.</td></tr>}
           </tbody>
         </table>
+</div>
       </div>
     </div>
   );

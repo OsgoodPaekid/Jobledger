@@ -39,8 +39,19 @@ export default function MiddlemanDetail() {
       />
 
       <h2 className="text-[13px] font-medium text-slate mt-6 mb-2">Clients brought</h2>
-      <div className="bg-paper-raised border border-line rounded-[10px] overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="md:hidden space-y-3">
+        {m.clients.map((c) => (
+          <div key={c.id} className="bg-paper-raised border border-line rounded-[10px] p-4">
+            <Link className="font-medium text-ink hover:text-brass" to={"/clients/" + c.id}>{c.name}</Link>
+            <div className="text-slate text-sm">{c.phone}</div>
+            <div className="text-slate text-sm">Referred: {shortDate(c.referral_date)}</div>
+          </div>
+        ))}
+        {m.clients.length === 0 && <p className="p-4 text-center text-slate">None yet.</p>}
+      </div>
+      <div className="hidden md:block bg-paper-raised border border-line rounded-[10px] overflow-hidden">
+        <div className="table-wrap">
+<table className="w-full text-sm">
           <thead><tr className="text-left text-slate text-[12.5px] border-b border-line"><th className="p-3 font-medium">Name</th><th className="font-medium">Phone</th><th className="font-medium">Referred</th></tr></thead>
           <tbody>
             {m.clients.map((c) => (
@@ -53,11 +64,29 @@ export default function MiddlemanDetail() {
             {m.clients.length === 0 && <tr><td colSpan={3} className="p-4 text-center text-slate">None yet.</td></tr>}
           </tbody>
         </table>
+</div>
       </div>
 
       <h2 className="text-[13px] font-medium text-slate mt-6 mb-2">Jobs referred</h2>
-      <div className="bg-paper-raised border border-line rounded-[10px] overflow-hidden">
-        <table className="w-full text-sm">
+      <div className="md:hidden space-y-3">
+        {m.jobs.map((j) => (
+          <div key={j.id} className="bg-paper-raised border border-line rounded-[10px] p-4">
+            <div className="flex items-start justify-between gap-2 mb-2">
+              <Link className="font-mono text-[13px] text-ink hover:text-brass" to={"/jobs/" + j.id}>#{j.job_number}</Link>
+              <StageBadge stage={j.current_stage} />
+            </div>
+            <div className="font-medium">{j.client_name}</div>
+            <div className="flex items-center justify-between mt-3 pt-3 border-t border-line">
+              <span className="font-serif tabular-nums">{money(j.total_amount)}</span>
+              <PaymentBadge status={j.payment_status} />
+            </div>
+          </div>
+        ))}
+        {m.jobs.length === 0 && <p className="p-4 text-center text-slate">None yet.</p>}
+      </div>
+      <div className="hidden md:block bg-paper-raised border border-line rounded-[10px] overflow-hidden">
+        <div className="table-wrap">
+<table className="w-full text-sm">
           <thead><tr className="text-left text-slate text-[12.5px] border-b border-line"><th className="p-3 font-medium">Job #</th><th className="font-medium">Client</th><th className="font-medium">Stage</th><th className="font-medium">Total</th><th className="font-medium">Payment</th></tr></thead>
           <tbody>
             {m.jobs.map((j) => (
@@ -72,6 +101,7 @@ export default function MiddlemanDetail() {
             {m.jobs.length === 0 && <tr><td colSpan={5} className="p-4 text-center text-slate">None yet.</td></tr>}
           </tbody>
         </table>
+</div>
       </div>
     </div>
   );
