@@ -10,12 +10,14 @@ import {
 
 const tickStyle = { fontSize: 11, fontFamily: "IBM Plex Sans, sans-serif", fill: "#626C7A" };
 
+let cachedDashboard = null;
+
 export default function Dashboard() {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState(cachedDashboard);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    api.get("/dashboard").then((r) => setData(r.data)).catch((e) => setError(e.message));
+    api.get("/dashboard").then((r) => { cachedDashboard = r.data; setData(r.data); }).catch((e) => setError(e.message));
   }, []);
 
   if (error) return <ErrorNotice error={error} />;

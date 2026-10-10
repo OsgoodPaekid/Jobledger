@@ -18,6 +18,11 @@ const PAYMENT_STATUSES = ["Unpaid", "Partially Paid", "Fully Paid"];
 export default function Jobs() {
   const [jobs, setJobs] = useState([]);
   const [clients, setClients] = useState([]);
+  const [middlemen, setMiddlemen] = useState([]);
+  const [newClient, setNewClient] = useState({ name: "", phone: "", email: "", middleman_id: "" });
+  const [newMiddleman, setNewMiddleman] = useState({ name: "", phone: "", company: "" });
+  const [saving, setSaving] = useState(false);
+  const [formError, setFormError] = useState(null);
   const [error, setError] = useState(null);
   const [filters, setFilters] = useState({ search: "", stage: "", payment_status: "" });
   const [showForm, setShowForm] = useState(false);
@@ -29,14 +34,52 @@ export default function Jobs() {
   };
 
   useEffect(() => { load(); }, [filters]);
-  useEffect(() => { api.get("/clients").then((r) => setClients(r.data)); }, []);
+  const loadLists = () => {
+    api.get("/clients").then((r) => setClients(r.data));
+    api.get("/middlemen").then((r) => setMiddlemen(r.data));
+  };
+  useEffect(() => { loadLists(); }, []);
 
   const submit = async (e) => {
     e.preventDefault();
-    await api.post("/jobs", { ...form, client_id: Number(form.client_id), total_amount: Number(form.total_amount) || 0 });
-    setShowForm(false);
-    setForm({ client_id: "", license_type: "", total_amount: "", date_received: "", expected_completion_date: "", description: "" });
-    load();
+    setFormError(null);
+    setSaving(true);
+    try {
+      const pickId = (res) => res.data.id ?? (res.data.client && res.data.client.id) ?? (res.data.middleman && res.data.middleman.id) ?? (res.data.data && res.data.data.id);
+      let clientId = Number(form.client_id);
+
+      if (form.client_id === "new") {
+        let middlemanId = newClient.middleman_id || null;
+        if (newClient.middleman_id === "new") {
+          const mm = await api.post("/middlemen", { ...newMiddleman, notes: "" });
+          middlemanId = pickId(mm);
+          if (!middlemanId) throw new Error("Could not read the new middleman id from the server");
+        }
+        const cl = await api.post("/clients", {
+          name: newClient.name,
+          phone: newClient.phone,
+          email: newClient.email,
+          address: "",
+          middleman_id: middlemanId,
+          referral_notes: "",
+        });
+        clientId = pickId(cl);
+        if (!clientId) throw new Error("Could not read the new client id from the server");
+      }
+
+      await api.post("/jobs", { ...form, client_id: clientId, total_amount: Number(form.total_amount) || 0 });
+
+      setShowForm(false);
+      setForm({ client_id: "", license_type: "", total_amount: "", date_received: "", expected_completion_date: "", description: "" });
+      setNewClient({ name: "", phone: "", email: "", middleman_id: "" });
+      setNewMiddleman({ name: "", phone: "", company: "" });
+      loadLists();
+      load();
+    } catch (err) {
+      setFormError((err.response && err.response.data && err.response.data.error) || err.message);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const removeJob = async (id, job_number) => {
@@ -56,11 +99,38 @@ export default function Jobs() {
 
       {showForm && (
         <Panel className="mb-5">
-          <form onSubmit={submit} className="grid grid-cols-2 gap-3">
-            <Select required value={form.client_id} onChange={(e) => setForm({ ...form, client_id: e.target.value })}>
-              <option value="">Select client…</option>
-              {clients.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-            </Select>
+          <form onSubmit={submit} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="sm:col-span-2">
+              <Select required value={form.client_id} onChange={(e) => setForm({ ...form, client_id: e.target.value })}>
+                <option value="">Select client…</option>
+                <option value="new">+ Add new client</option>
+                {clients.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+              </Select>
+            </div>
+
+            {form.client_id === "new" && (
+              <div className="sm:col-span-2 rounded-[10px] border border-line p-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="sm:col-span-2 text-[12.5px] font-medium text-slate">New client</div>
+                <TextInput required placeholder="Client name" value={newClient.name} onChange={(e) => setNewClient({ ...newClient, name: e.target.value })} />
+                <TextInput placeholder="Client phone" value={newClient.phone} onChange={(e) => setNewClient({ ...newClient, phone: e.target.value })} />
+                <TextInput placeholder="Client email" value={newClient.email} onChange={(e) => setNewClient({ ...newClient, email: e.target.value })} />
+                <Select value={newClient.middleman_id} onChange={(e) => setNewClient({ ...newClient, middleman_id: e.target.value })}>
+                  <option value="">No middleman / referrer</option>
+                  <option value="new">+ Add new middleman</option>
+                  {middlemen.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}
+                </Select>
+
+                {newClient.middleman_id === "new" && (
+                  <div className="sm:col-span-2 rounded-[10px] border border-line p-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="sm:col-span-2 text-[12.5px] font-medium text-slate">New middleman</div>
+                    <TextInput required placeholder="Middleman name" value={newMiddleman.name} onChange={(e) => setNewMiddleman({ ...newMiddleman, name: e.target.value })} />
+                    <TextInput placeholder="Middleman phone" value={newMiddleman.phone} onChange={(e) => setNewMiddleman({ ...newMiddleman, phone: e.target.value })} />
+                    <TextInput placeholder="Company" value={newMiddleman.company} onChange={(e) => setNewMiddleman({ ...newMiddleman, company: e.target.value })} />
+                  </div>
+                )}
+              </div>
+            )}
+
             <TextInput required placeholder="License / job type" value={form.license_type} onChange={(e) => setForm({ ...form, license_type: e.target.value })} />
             <TextInput type="number" step="0.01" placeholder="Total amount" value={form.total_amount} onChange={(e) => setForm({ ...form, total_amount: e.target.value })} />
             <Label>Date received
@@ -69,8 +139,9 @@ export default function Jobs() {
             <Label>Expected completion
               <TextInput type="date" value={form.expected_completion_date} onChange={(e) => setForm({ ...form, expected_completion_date: e.target.value })} />
             </Label>
-            <TextArea placeholder="Notes / description" className="col-span-2" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
-            <Button className="col-span-2">Create job</Button>
+            <TextArea placeholder="Notes / description" className="sm:col-span-2" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+            {formError && <p className="sm:col-span-2 text-sm text-rust">{formError}</p>}
+            <Button className="sm:col-span-2" disabled={saving}>{saving ? "Saving…" : "Create job"}</Button>
           </form>
         </Panel>
       )}
