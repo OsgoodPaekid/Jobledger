@@ -1,9 +1,8 @@
 import { NavLink } from "react-router-dom";
 import {
-  LayoutDashboard, Briefcase, Users, Handshake, Wallet, FileBarChart, Settings as SettingsIcon, X, LogOut,
+  LayoutDashboard, Briefcase, Users, Handshake, Wallet, FileBarChart, Settings as SettingsIcon, X,
 } from "lucide-react";
 import logoMark from "../assets/logo-mark-dark.svg";
-import { clearToken } from "../api.js";
 
 const links = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard, end: true },
@@ -75,15 +74,7 @@ export default function Sidebar({ isOpen, onClose }) {
           })}
         </nav>
 
-        <button
-          onClick={() => { clearToken(); window.location.reload(); }}
-          className="mt-auto mx-3 mb-3 flex items-center gap-3 px-3 py-2 text-sm text-paper/55 hover:text-paper/90 hover:bg-white/5 rounded-md transition-colors"
-        >
-          <LogOut size={16} strokeWidth={1.75} />
-          Log out
-        </button>
-
-        <div className="px-6 py-5 text-[11px] text-paper/35 border-t border-white/10">
+        <div className="mt-auto px-6 py-5 text-[11px] text-paper/35 border-t border-white/10">
           Every job, from referral to collection.
         </div>
       </aside>
