@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import { Menu } from "lucide-react";
 import Sidebar from "./components/Sidebar.jsx";
+import Login from "./pages/Login.jsx";
+import { getToken } from "./api.js";
 import Dashboard from "./pages/Dashboard.jsx";
 import Jobs from "./pages/Jobs.jsx";
 import JobDetail from "./pages/JobDetail.jsx";
@@ -15,6 +17,9 @@ import Settings from "./pages/Settings.jsx";
 
 export default function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [authed, setAuthed] = useState(!!getToken());
+
+  if (!authed) return <Login onLogin={() => setAuthed(true)} />;
 
   return (
     <div className="flex min-h-screen bg-paper">
